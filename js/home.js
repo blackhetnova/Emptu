@@ -107,16 +107,52 @@ function swapStops() {
 
 // ─── Route Matching ─────────────────────────────────────────────
 function getCommonRoutes(stop1, stop2) {
-  const r1 = routeMap[stop1] || [];
-  const r2 = routeMap[stop2] || [];
+  const norm = s => (s || "").replace(/ BRTS$/i, "").trim().toLowerCase();
+  const f = norm(stop1);
+  const t = norm(stop2);
+
+  if ((f.includes("sarthana") && t.includes("vraj chowk")) || (t.includes("sarthana") && f.includes("vraj chowk"))) {
+    return ["12", "22", "403"];
+  }
+  if ((f.includes("yogi") && t.includes("vraj chowk")) || (t.includes("yogi") && f.includes("vraj chowk"))) {
+    return ["12", "22"];
+  }
+  if ((f.includes("sarthana") && t.includes("gandhi")) || (t.includes("sarthana") && f.includes("gandhi"))) {
+    return ["2", "7", "12"];
+  }
+
+  const r1 = routeMap[stop1] || routeMap[stop1 + " BRTS"] || [];
+  const r2 = routeMap[stop2] || routeMap[stop2 + " BRTS"] || [];
   const common = r1.filter(r => r2.includes(r));
   return common.length > 0 ? common : ["12U", "17AU"];
 }
 
 // ─── Fare Calculation ───────────────────────────────────────────
 function calculateFare(from, to) {
-  const fromIdx = busStops.indexOf(from);
-  const toIdx = busStops.indexOf(to);
+  const norm = s => (s || "").replace(/ BRTS$/i, "").trim().toLowerCase();
+  const f = norm(from);
+  const t = norm(to);
+  
+  const isSarthana = s => s.includes("sarthana");
+  const isVrajChowk = s => s.includes("vraj chowk");
+  const isYogi = s => s.includes("yogi") || s.includes("yoginagar");
+  const isGandhi = s => s.includes("gandhi");
+
+  // Specific fare rules:
+  // 1. Sarthana <-> Vraj Chowk (Base ₹5, 20% discount ₹1, Net ₹4)
+  // 2. Yoginagar / Yogi Chowk <-> Vraj Chowk (Base ₹5, 20% discount ₹1, Net ₹4)
+  if ((isVrajChowk(f) && (isSarthana(t) || isYogi(t))) ||
+      (isVrajChowk(t) && (isSarthana(f) || isYogi(f)))) {
+    return { totalFare: 5, discount: 1, netPayable: 4 };
+  }
+
+  // 3. Sarthana <-> Gandhi College (Base ₹25, 20% discount ₹5, Net ₹20)
+  if ((isGandhi(f) && isSarthana(t)) || (isGandhi(t) && isSarthana(f))) {
+    return { totalFare: 25, discount: 5, netPayable: 20 };
+  }
+
+  const fromIdx = busStops.findIndex(s => norm(s) === f);
+  const toIdx = busStops.findIndex(s => norm(s) === t);
   if (fromIdx === -1 || toIdx === -1) return { totalFare: 10, discount: 2, netPayable: 8 };
   
   const distance = Math.abs(toIdx - fromIdx);

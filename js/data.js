@@ -16,7 +16,8 @@ const busStops = [
   "Rander Road BRTS", "Rander Talav BRTS", "Rangila Tower BRTS", "Sachin BRTS", "Sachin Depot BRTS", "Sachin GIDC Junction BRTS", "Sahara Darwaja BRTS", "Sarthana Depot BRTS", "Sayan Road BRTS", "SG Highway BRTS",
   "Shivaji Road BRTS", "Siddharth Nagar BRTS", "Simada BRTS", "Sindhi Market BRTS", "SMC Office BRTS", "Soni Falia BRTS", "Stadium Road BRTS", "Subhash Nagar BRTS", "Sumul Dairy Road BRTS", "Surya Kiran Road BRTS",
   "Tapi River Front BRTS", "Trikam Nagar BRTS", "Udhana Academy Road BRTS", "Udhana Darwaja Circle BRTS", "Udhana Main Road BRTS", "Udhana Sachin Road BRTS", "Utran BRTS", "Vadod BRTS", "Vadodara Road BRTS", "Vadodara-Surat Highway BRTS",
-  "Varachha Road BRTS", "Ved Road Gam BRTS", "Vesu Canal Road BRTS", "Vesu Main Road BRTS", "Vesu VIP Road Gail Colony BRTS", "V.I.P. Road Circle BRTS", "Vivekanand College BRTS", "Yogi Chowk Road BRTS"
+  "Varachha Road BRTS", "Ved Road Gam BRTS", "Vesu Canal Road BRTS", "Vesu Main Road BRTS", "Vesu VIP Road Gail Colony BRTS", "V.I.P. Road Circle BRTS", "Vivekanand College BRTS", "Yogi Chowk Road BRTS",
+  "Vraj Chowk BRTS", "Gandhi College BRTS", "Yoginagar BRTS"
 ];
 
 // Route mappings for BRTS stops
@@ -37,7 +38,8 @@ const routeMap = {
   "Rander Road BRTS": ["127"], "Rander Talav BRTS": ["127"], "Rangila Tower BRTS": ["3"], "Sachin BRTS": ["11", "17E"], "Sachin Depot BRTS": ["11"], "Sachin GIDC Junction BRTS": ["11"], "Sahara Darwaja BRTS": ["1"], "Sarthana Depot BRTS": ["12"], "Sayan Road BRTS": ["118"], "SG Highway BRTS": ["4"],
   "Shivaji Road BRTS": ["1"], "Siddharth Nagar BRTS": ["5"], "Simada BRTS": ["12U", "17AU"], "Sindhi Market BRTS": ["1"], "SMC Office BRTS": ["1"], "Soni Falia BRTS": ["2"], "Stadium Road BRTS": ["7"], "Subhash Nagar BRTS": ["5"], "Sumul Dairy Road BRTS": ["4"], "Surya Kiran Road BRTS": ["3"],
   "Tapi River Front BRTS": ["206"], "Trikam Nagar BRTS": ["5"], "Udhana Academy Road BRTS": ["11"], "Udhana Darwaja Circle BRTS": ["11"], "Udhana Main Road BRTS": ["11"], "Udhana Sachin Road BRTS": ["11"], "Utran BRTS": ["18"], "Vadod BRTS": ["4"], "Vadodara Road BRTS": ["4"], "Vadodara-Surat Highway BRTS": ["4"],
-  "Varachha Road BRTS": ["3", "5"], "Ved Road Gam BRTS": ["9"], "Vesu Canal Road BRTS": ["506"], "Vesu Main Road BRTS": ["506"], "Vesu VIP Road Gail Colony BRTS": ["716"], "V.I.P. Road Circle BRTS": ["10"], "Vivekanand College BRTS": ["107"], "Yogi Chowk Road BRTS": ["9"]
+  "Varachha Road BRTS": ["3", "5"], "Ved Road Gam BRTS": ["9"], "Vesu Canal Road BRTS": ["506"], "Vesu Main Road BRTS": ["506"], "Vesu VIP Road Gail Colony BRTS": ["716"], "V.I.P. Road Circle BRTS": ["10"], "Vivekanand College BRTS": ["107"], "Yogi Chowk Road BRTS": ["9"],
+  "Vraj Chowk BRTS": ["12", "22", "403"], "Gandhi College BRTS": ["2", "7", "108R", "117", "136"], "Yoginagar BRTS": ["9", "4", "12", "22"]
 };
 
 // SVG Node positions for selected stations in the SVG map
@@ -75,7 +77,10 @@ const mapStationCoordinates = {
   "Sachin G.I.D.C. BRTS": { x: 390, y: 620 },
   "Althan Depot Terminal BRTS": { x: 110, y: 680 },
   "Udhana Darwaja BRTS": { x: 250, y: 680 },
-  "Sachin Gam BRTS": { x: 390, y: 680 }
+  "Sachin Gam BRTS": { x: 390, y: 680 },
+  "Vraj Chowk BRTS": { x: 390, y: 100 },
+  "Gandhi College BRTS": { x: 170, y: 240 },
+  "Yoginagar BRTS": { x: 390, y: 340 }
 };
 
 // Notification alerts feed
@@ -155,7 +160,10 @@ const stationGeoCoordinates = {
   "Rander Gam BRTS": [21.2100, 72.7980],
   "Pandesara BRTS": [21.1450, 72.8420],
   "Ring Road BRTS": [21.1890, 72.8350],
-  "City Center BRTS": [21.1850, 72.8300]
+  "City Center BRTS": [21.1850, 72.8300],
+  "Vraj Chowk BRTS": [21.2250, 72.8950],
+  "Gandhi College BRTS": [21.1800, 72.8180],
+  "Yoginagar BRTS": [21.2130, 72.8960]
 };
 
 // 6 Major BRTS Corridors Geographic LatLng Lines
