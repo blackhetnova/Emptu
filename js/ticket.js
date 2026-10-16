@@ -46,7 +46,9 @@ function renderTicketDetails(ticket) {
     return getShortStopName(stopName).toUpperCase();
   }
   
-  const fromFormatted = formatStopNameForRouteTitle(ticket.fromStop);
+  const fromFormatted = (ticket.isSumanPravas && ticket.fromStop && ticket.fromStop.toLowerCase().includes("all surat"))
+    ? formatStopNameForRouteTitle(selectedFrom || "SARTHANA BRTS")
+    : formatStopNameForRouteTitle(ticket.fromStop);
   const toFormatted = formatStopNameForRouteTitle(ticket.toStop);
   
   // Set date values (dd/mm/yy & hh:mm:ss)
@@ -82,8 +84,13 @@ function renderTicketDetails(ticket) {
   document.getElementById('displayPassengerTotalVal').textContent = ticket.quantity;
   
   // Route title formatted uppercase
-  document.getElementById('displayRouteTitle').innerHTML = `<span>${fromFormatted}</span><span style="flex-shrink:0; margin:0 6px; color:#666; font-weight:400">→</span><span>${toFormatted}</span>`;
-  document.getElementById('displayRouteCodes').innerHTML = `<i class="fas fa-bus" style="font-size:12px; margin-right:4px;"></i> ${ticket.routes.join(', ')}`;
+  if (ticket.isSumanPravas) {
+    document.getElementById('displayRouteTitle').innerHTML = `<span>${fromFormatted}</span>`;
+    document.getElementById('displayRouteCodes').innerHTML = `<i class="fas fa-bus" style="font-size:12px; margin-right:4px;"></i> ${fromFormatted}`;
+  } else {
+    document.getElementById('displayRouteTitle').innerHTML = `<span>${fromFormatted}</span><span style="flex-shrink:0; margin:0 6px; color:#666; font-weight:400">→</span><span>${toFormatted}</span>`;
+    document.getElementById('displayRouteCodes').innerHTML = `<i class="fas fa-bus" style="font-size:12px; margin-right:4px;"></i> ${ticket.routes.join(', ')}`;
+  }
   
   // Generate QRs
   generateTicketQR(ticket);
@@ -201,18 +208,14 @@ function startTicketTimer(ticket) {
 
 
 
-// ─── Expanded QR Modal ──────────────────────────────────────────
+// ─── Expanded QR Modal (Disabled) ───────────────────────────────
 function openFullQR() {
-  if (currentTicket && currentTicket.status !== 'expired') {
-    document.getElementById('qrModal').classList.add('show');
-  } else {
-    showToast("Expired ticket QR cannot be expanded");
-  }
+  // Disabled per requirements: QR does not expand on click or hold
 }
 
-
 function closeFullQR() {
-  document.getElementById('qrModal').classList.remove('show');
+  const modal = document.getElementById('qrModal');
+  if (modal) modal.classList.remove('show');
 }
 
 // ─── Simulator: Adjust Passenger Quantity ───────────────────────

@@ -42,6 +42,7 @@ window.addEventListener('DOMContentLoaded', () => {
   // Always light theme
   document.body.setAttribute('data-theme', 'light');
   updateThemeColorMeta();
+  initAppProtections();
 
   // Set default datetime value in ticket config (if element exists)
   const customTimeInput = document.getElementById('simCustomDateTime');
@@ -187,4 +188,50 @@ function updateLanguageUI() {
 // ─── Toast Notification (Disabled) ──────────────────────────────
 function showToast(message) {
   // Toasts disabled — function kept as no-op to avoid call-site errors
+}
+
+// ─── Native App Protection & Website Behavior Restrictions ─────
+function initAppProtections() {
+  window.addEventListener('contextmenu', (e) => {
+    e.preventDefault();
+    return false;
+  }, { capture: true });
+
+  window.addEventListener('copy', (e) => {
+    e.preventDefault();
+    return false;
+  }, { capture: true });
+
+  window.addEventListener('cut', (e) => {
+    e.preventDefault();
+    return false;
+  }, { capture: true });
+
+  window.addEventListener('paste', (e) => {
+    const target = e.target;
+    if (!target || (target.tagName !== 'INPUT' && target.tagName !== 'TEXTAREA')) {
+      e.preventDefault();
+      return false;
+    }
+  }, { capture: true });
+
+  window.addEventListener('dragstart', (e) => {
+    e.preventDefault();
+    return false;
+  }, { capture: true });
+
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'PrintScreen') {
+      e.preventDefault();
+      return false;
+    }
+    if ((e.ctrlKey || e.metaKey) && (e.key === 'p' || e.key === 'P' || e.key === 's' || e.key === 'S')) {
+      e.preventDefault();
+      return false;
+    }
+    if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 's' || e.key === 'S' || e.key === '3' || e.key === '4' || e.key === 'i' || e.key === 'I')) {
+      e.preventDefault();
+      return false;
+    }
+  }, { capture: true });
 }
