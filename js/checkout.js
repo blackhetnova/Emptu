@@ -53,10 +53,6 @@ function proceedToPayment() {
 
 // ─── Generate Suman Pravas Daily Pass ───────────────────────────
 function generateSumanPravas() {
-  if (!selectedFrom) {
-    openStopSearch('from');
-    return;
-  }
   const ticketNum = generateTicketNumber();
   const timestamp = Date.now();
   const expiryTime = getSumanExpiryTimeFor(timestamp);
@@ -65,10 +61,10 @@ function generateSumanPravas() {
     id: 'ticket_' + timestamp,
     ticketNo: ticketNum,
     refNo: ticketNum.substring(4, 16),
-    fromStop: selectedFrom,
-    toStop: '',
+    fromStop: "All Surat BRTS Routes",
+    toStop: "Unlimited Rides",
     isSumanPravas: true,
-    routes: [getShortStopName(selectedFrom)],
+    routes: ["All Routes"],
     baseFare: 30.0,
     discount: 0.0,
     netPayable: 30.0,
@@ -87,11 +83,7 @@ function openCheckoutPage(ticket) {
   const fromShort = getShortStopName(ticket.fromStop);
   const toShort = getShortStopName(ticket.toStop);
   
-  if (ticket.isSumanPravas) {
-    document.getElementById('checkoutRouteTitle').innerHTML = `${fromShort}`;
-  } else {
-    document.getElementById('checkoutRouteTitle').innerHTML = `${fromShort} <i class="fas fa-arrow-right" style="font-size:12px"></i> ${toShort}`;
-  }
+  document.getElementById('checkoutRouteTitle').innerHTML = `${fromShort} <i class="fas fa-arrow-right" style="font-size:12px"></i> ${toShort}`;
   document.getElementById('checkoutAmount').textContent = `Rs ${ticket.netPayable.toFixed(1)}`;
   document.getElementById('payNowAmountBtn').textContent = `Rs ${ticket.netPayable.toFixed(1)}`;
   

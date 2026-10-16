@@ -46,9 +46,7 @@ function renderTicketDetails(ticket) {
     return getShortStopName(stopName).toUpperCase();
   }
   
-  const fromFormatted = (ticket.isSumanPravas && ticket.fromStop && ticket.fromStop.toLowerCase().includes("all surat"))
-    ? formatStopNameForRouteTitle(selectedFrom || "SARTHANA BRTS")
-    : formatStopNameForRouteTitle(ticket.fromStop);
+  const fromFormatted = formatStopNameForRouteTitle(ticket.fromStop);
   const toFormatted = formatStopNameForRouteTitle(ticket.toStop);
   
   // Set date values (dd/mm/yy & hh:mm:ss)
@@ -84,13 +82,8 @@ function renderTicketDetails(ticket) {
   document.getElementById('displayPassengerTotalVal').textContent = ticket.quantity;
   
   // Route title formatted uppercase
-  if (ticket.isSumanPravas) {
-    document.getElementById('displayRouteTitle').innerHTML = `<span>${fromFormatted}</span>`;
-    document.getElementById('displayRouteCodes').innerHTML = `<i class="fas fa-bus" style="font-size:12px; margin-right:4px;"></i> ${fromFormatted}`;
-  } else {
-    document.getElementById('displayRouteTitle').innerHTML = `<span>${fromFormatted}</span><span style="flex-shrink:0; margin:0 6px; color:#666; font-weight:400">→</span><span>${toFormatted}</span>`;
-    document.getElementById('displayRouteCodes').innerHTML = `<i class="fas fa-bus" style="font-size:12px; margin-right:4px;"></i> ${ticket.routes.join(', ')}`;
-  }
+  document.getElementById('displayRouteTitle').innerHTML = `<span>${fromFormatted}</span><span style="flex-shrink:0; margin:0 6px; color:#666; font-weight:400">→</span><span>${toFormatted}</span>`;
+  document.getElementById('displayRouteCodes').innerHTML = `<i class="fas fa-bus" style="font-size:12px; margin-right:4px;"></i> ${ticket.routes.join(', ')}`;
   
   // Generate QRs
   generateTicketQR(ticket);

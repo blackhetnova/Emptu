@@ -76,10 +76,7 @@ function renderHistoryList() {
 
     let routeHtml = '';
     if (isSuman) {
-      const stopName = (ticket.fromStop && !ticket.fromStop.toLowerCase().includes("all surat")) 
-        ? ticket.fromStop 
-        : (selectedFrom || "SARTHANA BRTS");
-      routeHtml = `${stopName.toUpperCase()}`;
+      routeHtml = `${ticket.fromStop.toUpperCase()}`;
     } else {
       routeHtml = `${ticket.fromStop.toUpperCase()} <span style="color:#1E88E5;">TO</span><br>${ticket.toStop.toUpperCase()}`;
     }
