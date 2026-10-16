@@ -39,7 +39,7 @@ const routeMap = {
   "Shivaji Road BRTS": ["1"], "Siddharth Nagar BRTS": ["5"], "Simada BRTS": ["12U", "17AU"], "Sindhi Market BRTS": ["1"], "SMC Office BRTS": ["1"], "Soni Falia BRTS": ["2"], "Stadium Road BRTS": ["7"], "Subhash Nagar BRTS": ["5"], "Sumul Dairy Road BRTS": ["4"], "Surya Kiran Road BRTS": ["3"],
   "Tapi River Front BRTS": ["206"], "Trikam Nagar BRTS": ["5"], "Udhana Academy Road BRTS": ["11"], "Udhana Darwaja Circle BRTS": ["11"], "Udhana Main Road BRTS": ["11"], "Udhana Sachin Road BRTS": ["11"], "Utran BRTS": ["18"], "Vadod BRTS": ["4"], "Vadodara Road BRTS": ["4"], "Vadodara-Surat Highway BRTS": ["4"],
   "Varachha Road BRTS": ["3", "5"], "Ved Road Gam BRTS": ["9"], "Vesu Canal Road BRTS": ["506"], "Vesu Main Road BRTS": ["506"], "Vesu VIP Road Gail Colony BRTS": ["716"], "V.I.P. Road Circle BRTS": ["10"], "Vivekanand College BRTS": ["107"], "Yogi Chowk Road BRTS": ["9"],
-  "Vraj Chowk BRTS": ["12", "22", "403"], "Gandhi College BRTS": ["2", "7", "108R", "117", "136"], "Yoginagar BRTS": ["9", "4", "12", "22"]
+  "Vraj Chowk BRTS": ["12", "22", "410"], "Gandhi College BRTS": ["2", "7", "12", "117", "136"], "Yoginagar BRTS": ["9", "4", "14", "22"]
 };
 
 // SVG Node positions for selected stations in the SVG map
