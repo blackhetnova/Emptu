@@ -193,13 +193,7 @@ function updateLanguageUI() {
   }
 }
 
-// ─── Toast Notification ─────────────────────────────────────────
+// ─── Toast Notification (Disabled) ──────────────────────────────
 function showToast(message) {
-  const toast = document.getElementById('toast');
-  toast.textContent = message;
-  toast.classList.add('show');
-  
-  setTimeout(() => {
-    toast.classList.remove('show');
-  }, 2800);
+  // Toasts disabled — function kept as no-op to avoid call-site errors
 }

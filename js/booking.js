@@ -22,6 +22,18 @@ function toggleBookingTabs(tab) {
 // ─── Render Booking History List ────────────────────────────────
 function renderHistoryList() {
   const container = document.getElementById('bookingsListArea');
+
+  // Remove expired tickets from bookingHistory and persist the change
+  const now = Date.now();
+  const before = bookingHistory.length;
+  bookingHistory = bookingHistory.filter(ticket => {
+    const isExpired = ticket.status === 'expired' || (!userPreferences.infiniteTimer && ticket.expiryTime <= now);
+    return !isExpired;
+  });
+  if (bookingHistory.length !== before) {
+    saveHistoryToStorage();
+  }
+
   if (bookingHistory.length === 0) {
     container.innerHTML = `
       <div style="text-align:center; padding-top:30px; color:#555; font-size:16px;">
@@ -31,7 +43,7 @@ function renderHistoryList() {
     return;
   }
   
-  // Show all tickets, newest first
+  // Show active tickets, newest first
   const tickets = [...bookingHistory].reverse();
   
   container.innerHTML = tickets.map(ticket => {
@@ -56,11 +68,8 @@ function renderHistoryList() {
     const ess = String(expObj.getSeconds()).padStart(2, '0');
     const expDate = `${edd}/${emm}/${eyyyy} ${ehh}:${emin}:${ess}`;
     
-    // Status color
-    const now = Date.now();
-    const isExpired = ticket.status === 'expired' || (!userPreferences.infiniteTimer && ticket.expiryTime <= now);
-    const statusText = isExpired ? 'Expired' : 'Active';
-    const statusColor = isExpired ? '#E53935' : '#43A047';
+    const statusText = 'Active';
+    const statusColor = '#43A047';
 
     // Order ID purely digits based on timestamp + random 5 digits (or padded ticket number)
     const orderId = `${yyyy}${mm}${dd}${hh}${min}${ss}00701`;
