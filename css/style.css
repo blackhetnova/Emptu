@@ -65,16 +65,9 @@ html {
   text-size-adjust: none;
 }
 
-[data-theme="dark"] html {
-  background: var(--bg);
-}
-
 @media (min-width: 481px) {
   html {
     background: #dce2eb;
-  }
-  [data-theme="dark"] html {
-    background: #0d0e12;
   }
 }
 

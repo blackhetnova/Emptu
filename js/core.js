@@ -39,13 +39,9 @@ window.addEventListener('DOMContentLoaded', () => {
   setupInitialStops();
   quickRebookList();
   
-  // Theme apply
-  document.body.setAttribute('data-theme', userPreferences.theme);
-  updateThemeColorMeta(userPreferences.theme);
-  const themeToggle = document.getElementById('darkModeToggle');
-  if (themeToggle && userPreferences.theme === 'dark') {
-    themeToggle.classList.add('checked');
-  }
+  // Always light theme
+  document.body.setAttribute('data-theme', 'light');
+  updateThemeColorMeta();
 
   // Set default datetime value in ticket config (if element exists)
   const customTimeInput = document.getElementById('simCustomDateTime');
@@ -119,29 +115,15 @@ function saveHistoryToStorage() {
   }
 }
 
-// ─── Dark Mode Toggle ───────────────────────────────────────────
+// ─── Dark Mode (Disabled) ────────────────────────────────────────
 function toggleDarkMode() {
-  const isDark = document.body.getAttribute('data-theme') === 'dark';
-  const nextTheme = isDark ? 'light' : 'dark';
-  document.body.setAttribute('data-theme', nextTheme);
-  
-  userPreferences.theme = nextTheme;
-  savePreferences();
-  updateThemeColorMeta(nextTheme);
-  
-  const toggleBtn = document.getElementById('darkModeToggle');
-  if (nextTheme === 'dark') {
-    toggleBtn.classList.add('checked');
-  } else {
-    toggleBtn.classList.remove('checked');
-  }
-  showToast(nextTheme === 'dark' ? "Dark Theme enabled" : "Light Theme enabled");
+  // Dark mode disabled
 }
 
-function updateThemeColorMeta(theme) {
+function updateThemeColorMeta() {
   const meta = document.getElementById('themeColorMeta');
   if (meta) {
-    meta.setAttribute('content', theme === 'dark' ? '#121214' : '#F5F5F5');
+    meta.setAttribute('content', '#F5F5F5');
   }
 }
 

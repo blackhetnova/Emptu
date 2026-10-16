@@ -176,7 +176,6 @@ function resetSimulatorData() {
     selectedTo = "Nana Varachha BRTS";
     
     document.body.setAttribute('data-theme', 'light');
-    document.getElementById('darkModeToggle').classList.remove('checked');
     document.getElementById('infiniteTimerToggle').classList.remove('checked');
     document.getElementById('langToggle').classList.remove('checked');
     
