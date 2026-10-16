@@ -41,6 +41,7 @@ window.addEventListener('DOMContentLoaded', () => {
   
   // Theme apply
   document.body.setAttribute('data-theme', userPreferences.theme);
+  updateThemeColorMeta(userPreferences.theme);
   const themeToggle = document.getElementById('darkModeToggle');
   if (themeToggle && userPreferences.theme === 'dark') {
     themeToggle.classList.add('checked');
@@ -126,6 +127,7 @@ function toggleDarkMode() {
   
   userPreferences.theme = nextTheme;
   savePreferences();
+  updateThemeColorMeta(nextTheme);
   
   const toggleBtn = document.getElementById('darkModeToggle');
   if (nextTheme === 'dark') {
@@ -134,6 +136,13 @@ function toggleDarkMode() {
     toggleBtn.classList.remove('checked');
   }
   showToast(nextTheme === 'dark' ? "Dark Theme enabled" : "Light Theme enabled");
+}
+
+function updateThemeColorMeta(theme) {
+  const meta = document.getElementById('themeColorMeta');
+  if (meta) {
+    meta.setAttribute('content', theme === 'dark' ? '#121214' : '#F5F5F5');
+  }
 }
 
 // ─── Infinite Countdown Timer Toggle ────────────────────────────

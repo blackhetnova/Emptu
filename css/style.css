@@ -59,14 +59,23 @@
 }
 
 html {
-  background: #dce2eb;
+  background: var(--bg);
   -webkit-text-size-adjust: none;
   -moz-text-size-adjust: none;
   text-size-adjust: none;
 }
 
 [data-theme="dark"] html {
-  background: #0d0e12;
+  background: var(--bg);
+}
+
+@media (min-width: 481px) {
+  html {
+    background: #dce2eb;
+  }
+  [data-theme="dark"] html {
+    background: #0d0e12;
+  }
 }
 
 body {
@@ -78,7 +87,8 @@ body {
   width: 100%;
   margin: 0 auto;
   min-height: 100vh;
-  padding-bottom: 76px;
+  min-height: 100dvh;
+  padding-bottom: calc(76px + env(safe-area-inset-bottom, 0px));
   position: relative;
   box-shadow: 0 0 30px rgba(0, 0, 0, 0.18);
   display: flex;
@@ -114,7 +124,7 @@ body {
 /* ======================== */
 .header {
   background: var(--bg);
-  padding: 14px 16px;
+  padding: calc(14px + env(safe-area-inset-top, 0px)) 16px 14px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -125,6 +135,14 @@ body {
   width: 100%;
   max-width: 440px;
   margin: 0 auto;
+}
+
+.top-logo-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: calc(12px + env(safe-area-inset-top, 0px)) 16px 4px;
+  background: var(--bg);
 }
 
 /* Make headers sticky ONLY on these specific pages */
@@ -458,7 +476,7 @@ body {
   background: #3664B7;
   display: flex;
   justify-content: space-around;
-  padding: 8px 4px 10px;
+  padding: 8px 4px calc(10px + env(safe-area-inset-bottom, 0px));
   z-index: 1000;
   border-top: none;
   box-shadow: 0 -4px 16px rgba(0,0,0,0.15);
