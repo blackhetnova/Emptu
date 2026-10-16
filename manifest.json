@@ -1,0 +1,35 @@
+{
+  "id": "surat_sitilink_pwa",
+  "name": "Surat Sitilink",
+  "short_name": "Surat Sitilink",
+  "description": "Surat Sitilink BRTS Official Digital Ticketing Service",
+  "start_url": "./index.html?mode=standalone",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": ["standalone", "fullscreen", "minimal-ui"],
+  "background_color": "#0099e5",
+  "theme_color": "#3664B7",
+  "orientation": "portrait",
+  "lang": "en",
+  "prefer_related_applications": false,
+  "icons": [
+    {
+      "src": "assets/icon.png?v=4",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icon-512.png?v=4",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/apple-touch-icon.png?v=4",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

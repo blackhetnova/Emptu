@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Surat Sitilink</title>
+  <!-- Stylesheets & Fonts -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="css/style.css?v=23">
+  <!-- Security & Content Policy Meta -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com https://*.tile.openstreetmap.org https://www.google.com https://*.google.com data: blob:;">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="screen-orientation" content="portrait">
+  <meta name="x5-orientation" content="portrait">
+  <meta name="orientation" content="portrait">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Surat Sitilink">
+
+  <meta name="application-name" content="Surat Sitilink">
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/icon.png?v=4">
+  <link rel="icon" type="image/png" sizes="512x512" href="assets/icon-512.png?v=4">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png?v=4">
+  <link rel="manifest" href="manifest.json?v=4">
+</head>
+<body>
+
+  <!-- Toast Notification -->
+  <div class="toast" id="toast">Toast Message</div>
+
+  <!-- Menu Overlay -->
+  <div class="menu-overlay" id="menuOverlay" onclick="toggleMenu(false)"></div>
+
+  <!-- Side Navigation Drawer (100% Match with Official Sitilink App) -->
+  <div class="side-menu" id="sideMenu">
+    <!-- Profile Header Section -->
+    <div class="sitilink-menu-header" onclick="openLoginModal()" title="Click to edit profile name">
+      <div class="sitilink-avatar">
+        <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="8" r="4"/>
+          <path d="M20 21a8 8 0 0 0-16 0"/>
+        </svg>
+      </div>
+      <div class="sitilink-user-name" id="userDisplayName">Panth</div>
+      <div class="sitilink-user-loc" id="userDisplayLoc" style="font-size: 11px; color: rgba(255,255,255,0.7); margin-top: 2px;"><i class="fas fa-map-marker-alt"></i> Surat, Gujarat</div>
+    </div>
+    
+    <div class="sitilink-menu-divider"></div>
+
+    <!-- Menu Items List (Exact order & icons from Sitilink App photo) -->
+    <div class="menu-items sitilink-drawer-items">
+      <button class="sitilink-drawer-item" onclick="toggleMenu(false); navigateTo('home')">
+        <i class="fas fa-ticket-alt"></i>
+        <span>M Ticket</span>
+      </button>
+
+      <button class="sitilink-drawer-item" onclick="toggleMenu(false); locateUserOnMap(); navigateTo('map')">
+        <i class="fas fa-location-arrow"></i>
+        <span>Near you</span>
+      </button>
+
+      <button class="sitilink-drawer-item" onclick="toggleMenu(false); openFavouritesModal()">
+        <i class="far fa-star"></i>
+        <span>Favourites</span>
+      </button>
+
+      <button class="sitilink-drawer-item" onclick="toggleMenu(false); navigateTo('map')">
+        <i class="far fa-map"></i>
+        <span>Transit Map</span>
+      </button>
+
+      <button class="sitilink-drawer-item" onclick="toggleMenu(false); navigateTo('booking')">
+        <i class="far fa-id-card"></i>
+        <span>Transaction History</span>
+      </button>
+
+      <button class="sitilink-drawer-item" onclick="toggleMenu(false); openComplaintModal()">
+        <i class="far fa-comment-dots"></i>
+        <span>Complaint</span>
+      </button>
+
+      <button class="sitilink-drawer-item" onclick="toggleMenu(false); openFeedbackModal()">
+        <i class="far fa-comments"></i>
+        <span>Feedback</span>
+      </button>
+
+      <button class="sitilink-drawer-item" onclick="toggleMenu(false); shareApp()">
+        <i class="fas fa-bullhorn"></i>
+        <span>Invite Friends</span>
+      </button>
+
+      <button class="sitilink-drawer-item" onclick="toggleLanguage()">
+        <i class="fas fa-globe"></i>
+        <span>Change Language</span>
+      </button>
+
+      <button class="sitilink-drawer-item" onclick="toggleMenu(false); openContactModal()">
+        <i class="fas fa-phone-alt"></i>
+        <span>Contact Us</span>
+      </button>
+
+      <button class="sitilink-drawer-item" onclick="toggleMenu(false); openTermsModal()">
+        <i class="far fa-newspaper"></i>
+        <span>Terms and Condition</span>
+      </button>
+
+      <button class="sitilink-drawer-item" onclick="toggleMenu(false); openPrivacyModal()">
+        <i class="far fa-shield-alt"></i>
+        <span>Privacy Policy</span>
+      </button>
+
+      <!-- Settings Toggles -->
+      <div class="sitilink-menu-divider" style="margin: 8px 0;"></div>
+
+      <div class="sitilink-drawer-item" style="justify-content: space-between; cursor: default;">
+        <div style="display: flex; align-items: center; gap: 14px;">
+          <i class="fas fa-moon"></i>
+          <span>Dark Mode</span>
+        </div>
+        <div class="toggle-switch" id="darkModeToggle" onclick="toggleDarkMode()"></div>
+      </div>
+
+      <div class="sitilink-drawer-item" style="justify-content: space-between; cursor: default;">
+        <div style="display: flex; align-items: center; gap: 14px;">
+          <i class="fas fa-infinity"></i>
+          <span>Infinite Timer</span>
+        </div>
+        <div class="toggle-switch" id="infiniteTimerToggle" onclick="toggleInfiniteTimer()"></div>
+      </div>
+
+      <div class="sitilink-drawer-item" style="justify-content: space-between; cursor: default;">
+        <div style="display: flex; align-items: center; gap: 14px;">
+          <i class="fas fa-language"></i>
+          <span>ગુજરાતી / English</span>
+        </div>
+        <div class="toggle-switch" id="langToggle" onclick="toggleLanguage()"></div>
+      </div>
+
+      <div class="sitilink-menu-divider" style="margin: 8px 0;"></div>
+
+      <button class="sitilink-drawer-item" onclick="deleteAccount()">
+        <i class="fas fa-user-slash"></i>
+        <span>Delete Account</span>
+      </button>
+
+      <button class="sitilink-drawer-item" onclick="logoutUser()">
+        <i class="fas fa-power-off"></i>
+        <span>Signout</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- HOME PAGE -->
+  <div class="page active" id="page-home">
+    <!-- Direct Top Logo & Hamburger Button Row (3-line menu on LEFT of logo) -->
+    <div class="top-logo-row" style="display: flex; align-items: center; gap: 8px; padding: 12px 16px 4px;">
+      <button class="header-action" onclick="toggleMenu(true)" title="Menu"><i class="fas fa-bars"></i></button>
+      <div class="header-logo" style="flex: 1;">
+        <img src="assets/gorutes_logo_v3.png" alt="Sitilink" class="header-logo-img">
+      </div>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="search-bar-container">
+      <div class="search-bar">
+        <i class="fas fa-search search-bar-icon"></i>
+        <input type="text" id="routeSearchInput" oninput="quickSearchRoute()" placeholder="Search bus route number">
+      </div>
+      <div id="routeSearchResults" class="search-results-dropdown"></div>
+    </div>
+
+    <!-- Plan Your Trip Panel -->
+    <div class="plan-trip-section">
+      <h2 class="plan-trip-title">Plan Your Trip</h2>
+      
+      <div class="trip-form-container">
+        <!-- From Field -->
+        <div class="trip-field" onclick="openStopSearch('from')">
+          <div class="trip-field-label">From</div>
+          <div class="trip-field-inner">
+            <div class="trip-field-icon">
+              <i class="fas fa-bus"></i>
+            </div>
+            <div class="trip-field-value" id="fromStopLabel">Select Source</div>
+          </div>
+        </div>
+
+        <!-- Swap Button -->
+        <button class="swap-btn" onclick="swapStops()" title="Swap Source & Destination">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#393B40" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="7" y1="4" x2="7" y2="20"></line>
+            <polyline points="4 17 7 20 10 17"></polyline>
+            <line x1="17" y1="20" x2="17" y2="4"></line>
+            <polyline points="14 7 17 4 20 7"></polyline>
+          </svg>
+        </button>
+
+        <!-- To Field -->
+        <div class="trip-field" onclick="openStopSearch('to')">
+          <div class="trip-field-label">To</div>
+          <div class="trip-field-inner">
+            <div class="trip-field-icon">
+              <i class="fas fa-bus"></i>
+            </div>
+            <div class="trip-field-value" id="toStopLabel">Select Destination</div>
+          </div>
+        </div>
+
+        <!-- Action Buttons Row -->
+        <div class="trip-actions-row">
+          <button class="trip-action-btn filled" style="border-radius: 8px !important; font-weight: 500 !important; font-size: 13px !important; background: #3467bf !important;" onclick="showToast('BRTS live timetable synced')">
+            <span>Refresh data</span>
+          </button>
+          <button class="trip-action-btn outline" style="border-radius: 8px !important; font-weight: 500 !important; font-size: 13px !important; border: 1px solid #cccccc !important; color: #333333 !important; background: #ffffff !important;" onclick="generateSumanPravas()">
+            <span>Suman Pravas</span>
+          </button>
+        </div>
+
+        <!-- Show Route & Fare Button -->
+        <button class="show-route-btn" style="border-radius: 8px !important; font-weight: 600 !important; font-size: 15px !important; background: #3467bf !important;" onclick="proceedToPayment()">
+          Show Route & Fare
+        </button>
+      </div>
+    </div>
+
+    <!-- Hot Offer Section -->
+    <div class="hot-offer-section">
+      <h2 class="hot-offer-title">Hot offer</h2>
+      <div class="hot-offer-banner">
+        <img src="assets/surat_smart_city_banner_v2.png" alt="Surat Smart City" class="hot-offer-img">
+      </div>
+    </div>
+
+    <!-- Install App Banner -->
+    <div class="install-app-banner" id="installBanner" style="display:none">
+      <div class="install-banner-content">
+        <div class="install-banner-icon">
+          <i class="fas fa-download"></i>
+        </div>
+        <div class="install-banner-text">
+          <h3>Install GoRutes App</h3>
+          <p>Add to home screen for the best experience — works offline!</p>
+        </div>
+        <button class="install-banner-btn" id="installBtn" onclick="installApp()">
+          <i class="fas fa-plus-circle"></i> Install
+        </button>
+      </div>
+      <button class="install-banner-close" onclick="dismissInstallBanner()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- SEARCH STOP PAGE -->
+  <div class="page" id="page-search-stop">
+    <div class="header" style="border-bottom:none">
+      <button class="header-action" onclick="goBack()"><i class="fas fa-arrow-left"></i></button>
+      <h1 id="searchPageTitle">Select Stop</h1>
+      <div style="width:36px"></div>
+    </div>
+
+    <div class="search-input-wrapper">
+      <i class="fas fa-search"></i>
+      <input type="text" id="stopSearchInput" oninput="filterSearchStops()" placeholder="Type stop name...">
+    </div>
+
+    <div class="stops-list-container" id="stopsList">
+      <!-- Generated stops list -->
+    </div>
+  </div>
+
+  <!-- PAYMENT GATEWAY CHECKOUT PAGE -->
+  <div class="page" id="page-checkout">
+    <div class="header">
+      <button class="header-action" onclick="goBack()"><i class="fas fa-arrow-left"></i></button>
+      <h1>Select Payment Method</h1>
+      <div style="width:36px"></div>
+    </div>
+
+    <div style="padding: 16px;">
+      <!-- Order Summary Card -->
+      <div class="section-card" style="margin-bottom: 16px; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white;">
+        <div style="font-size: 11px; opacity: 0.8; text-transform: uppercase; letter-spacing: 0.5px;">Surat BRTS Ticket Checkout</div>
+        <div style="font-size: 17px; font-weight: 700; margin: 6px 0;" id="checkoutRouteTitle">From ➔ To</div>
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: 12px; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 10px;">
+          <div>
+            <div style="font-size: 11px; opacity: 0.8;">Total Amount (Inc. 20% Mobile Discount)</div>
+            <div style="font-size: 22px; font-weight: 800; color: #ffbc00;" id="checkoutAmount">Rs 8.0</div>
+          </div>
+          <div style="font-size: 11px; background: rgba(255,255,255,0.2); padding: 4px 10px; border-radius: 20px;">
+            <i class="fas fa-ticket-alt"></i> 1 Pass
+          </div>
+        </div>
+      </div>
+
+      <!-- Payment Method Selection -->
+      <h2 class="section-title" style="margin-bottom: 10px;"><i class="fas fa-wallet" style="color:var(--secondary)"></i> Choose Payment Option</h2>
+
+      <div class="payment-methods-list" style="display: flex; flex-direction: column; gap: 10px;">
+        <!-- UPI Option -->
+        <label class="payment-method-item" id="payItemUPI" onclick="selectPaymentMethod('upi')" style="display: flex; align-items: center; justify-content: space-between; padding: 14px; background: var(--card); border: 2px solid var(--primary); border-radius: 12px; cursor: pointer;">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <input type="radio" name="paymentMethod" id="payUPI" value="upi" checked style="accent-color: var(--primary);">
+            <div>
+              <div style="font-weight: 700; font-size: 14px; color: var(--text);">UPI / QR Code</div>
+              <div style="font-size: 11px; color: var(--text-secondary);">Google Pay, PhonePe, Paytm, BHIM</div>
+            </div>
+          </div>
+          <div style="display: flex; gap: 6px; font-size: 18px; color: var(--primary);">
+            <i class="fab fa-google-pay"></i>
+            <i class="fas fa-qrcode"></i>
+          </div>
+        </label>
+
+        <!-- UPI Details Box -->
+        <div id="upiPayBox" style="padding: 14px; background: var(--card); border-radius: 12px; border: 1px solid var(--border); text-align: center;">
+          <div style="font-size: 12px; font-weight: 600; margin-bottom: 8px; color: var(--text);">Scan QR to Pay via any UPI App</div>
+          <div id="checkoutUPIQR" style="margin: 0 auto; display: inline-block; padding: 10px; background: white; border-radius: 12px; border: 1px solid #ddd;"></div>
+          <div style="margin-top: 10px; font-size: 11px; color: var(--text-secondary);">Or enter VPA / UPI ID:</div>
+          <input type="text" id="upiIdInput" placeholder="username@upi" style="width: 100%; margin-top: 6px; padding: 10px; border-radius: 8px; border: 1px solid var(--border); font-family: inherit; font-size: 13px; background: var(--bg); color: var(--text);">
+        </div>
+
+        <!-- Credit/Debit Card Option -->
+        <label class="payment-method-item" id="payItemCard" onclick="selectPaymentMethod('card')" style="display: flex; align-items: center; justify-content: space-between; padding: 14px; background: var(--card); border: 1px solid var(--border); border-radius: 12px; cursor: pointer;">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <input type="radio" name="paymentMethod" id="payCard" value="card" style="accent-color: var(--primary);">
+            <div>
+              <div style="font-weight: 700; font-size: 14px; color: var(--text);">Credit / Debit Card</div>
+              <div style="font-size: 11px; color: var(--text-secondary);">Visa, Mastercard, RuPay</div>
+            </div>
+          </div>
+          <div style="display: flex; gap: 6px; font-size: 16px; color: var(--text-secondary);">
+            <i class="fab fa-cc-visa"></i>
+            <i class="fab fa-cc-mastercard"></i>
+          </div>
+        </label>
+
+        <!-- Card Details Box -->
+        <div id="cardPayBox" style="display: none; padding: 14px; background: var(--card); border-radius: 12px; border: 1px solid var(--border);">
+          <input type="text" id="cardNumberInput" placeholder="Card Number (16 digits)" maxlength="19" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 8px; font-family: inherit; font-size: 13px; background: var(--bg); color: var(--text);">
+          <div style="display: flex; gap: 8px;">
+            <input type="text" id="cardExpiryInput" placeholder="MM/YY" maxlength="5" style="flex: 1; padding: 10px; border-radius: 8px; border: 1px solid var(--border); font-family: inherit; font-size: 13px; background: var(--bg); color: var(--text);">
+            <input type="password" id="cardCVVInput" placeholder="CVV" maxlength="3" style="width: 90px; padding: 10px; border-radius: 8px; border: 1px solid var(--border); font-family: inherit; font-size: 13px; background: var(--bg); color: var(--text);">
+          </div>
+        </div>
+
+        <!-- Net Banking Option -->
+        <label class="payment-method-item" id="payItemNetbanking" onclick="selectPaymentMethod('netbanking')" style="display: flex; align-items: center; justify-content: space-between; padding: 14px; background: var(--card); border: 1px solid var(--border); border-radius: 12px; cursor: pointer;">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <input type="radio" name="paymentMethod" id="payNetbanking" value="netbanking" style="accent-color: var(--primary);">
+            <div>
+              <div style="font-weight: 700; font-size: 14px; color: var(--text);">Net Banking</div>
+              <div style="font-size: 11px; color: var(--text-secondary);">SBI, HDFC, ICICI, Axis, BOB</div>
+            </div>
+          </div>
+          <i class="fas fa-university" style="font-size: 16px; color: var(--text-secondary);"></i>
+        </label>
+
+        <!-- Net Banking Select Box -->
+        <div id="netbankPayBox" style="display: none; padding: 14px; background: var(--card); border-radius: 12px; border: 1px solid var(--border);">
+          <select id="bankSelect" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border); font-family: inherit; font-size: 13px; background: var(--bg); color: var(--text);">
+            <option value="sbi">State Bank of India (SBI)</option>
+            <option value="hdfc">HDFC Bank</option>
+            <option value="icici">ICICI Bank</option>
+            <option value="axis">Axis Bank</option>
+            <option value="bob">Bank of Baroda</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Pay Now Button -->
+      <button class="show-route-btn" style="margin-top: 20px;" id="payNowBtn" onclick="confirmAndPay()">
+        <i class="fas fa-lock"></i> Pay <span id="payNowAmountBtn">Rs 8.0</span> & Get Ticket
+      </button>
+    </div>
+  </div>
+
+  <!-- TICKET / PAYMENT DETAILS PAGE (100% Match with Reference Image) -->
+  <div class="page" id="page-payment-details" style="padding-top: 0 !important;">
+    <div class="header" style="margin-bottom: 0 !important; border-bottom: none !important; padding-bottom: 0 !important;">
+      <button class="header-action" onclick="goBack()"><i class="fas fa-chevron-left"></i></button>
+      <h1 style="font-size: 17px; font-weight: 400; color: #222;">Payment Details</h1>
+      <div style="width:36px"></div>
+    </div>
+
+    <!-- Live Ticket Visual Card (Floating card design) -->
+    <div class="ticket-wrapper" id="ticketVisualArea" style="margin-top: 12px !important; border-radius: 20px !important;">
+      <!-- QR Section (First Box) -->
+      <div class="ticket-qr-section" style="padding-top: 8px; padding-bottom: 12px;">
+        <div class="ticket-status-subtitle" id="ticketStatusSubtitle" style="font-size: 11px; color: #777; margin-bottom: 4px;">Scan at your boarding gate</div>
+        <div class="ticket-qr-container" onclick="openFullQR()" style="margin-top: 4px; margin-bottom: 4px;">
+          <div id="qrcode"></div>
+        </div>
+        <div style="font-size: 11px; color: #888; margin-top: 4px; margin-bottom: 4px;">Click on QR code to expand</div>
+        <div class="ticket-no" id="displayTicketNo" style="font-size: 11px; color: #777; font-family: sans-serif; letter-spacing: 0.5px;">7101000116300361</div>
+        
+        <!-- Live Countdown display (Width increased by 1.5px) -->
+        <div class="ticket-timer-display" id="displayCountdown" style="font-size: 19.5px; font-weight: 700; color: #111; margin: 4px 0; line-height: 24px; letter-spacing: 0.8px;">01 : 59 : 50</div>
+      </div>
+
+
+      <!-- Separator cut-out -->
+      <div class="ticket-divider-wrapper">
+        <div class="ticket-divider-left"></div>
+        <div class="ticket-divider"></div>
+        <div class="ticket-divider-right"></div>
+      </div>
+
+      <!-- Details Section (Second Box) -->
+      <div class="ticket-details-section" style="padding-top: 12px;">
+        <!-- Grey Description Pill (Placed in second box above stops) -->
+        <div style="margin-bottom: 14px; text-align: center;">
+          <div class="ticket-validity-pill" id="displayValidityNote">
+            The validity period is 2 hours and the entry time is 15 minutes
+          </div>
+        </div>
+
+        <!-- Route Title (Stops) -->
+        <div class="ticket-route-heading" id="displayRouteTitle">
+          Select Source <i class="fas fa-long-arrow-alt-right" style="margin:0 4px; color:#555"></i> Select Destination
+        </div>
+
+        <!-- Route & Ticket Number Row -->
+        <div class="ticket-row-group">
+          <div>
+            <div class="ticket-info-label">Route number</div>
+            <div class="ticket-info-value" id="displayRouteCodes"><i class="fas fa-bus" style="font-size: 12px; margin-right: 4px;"></i> 12U, 17AU</div>
+          </div>
+          <div style="text-align: right;">
+            <div class="ticket-info-label">Ticket number</div>
+            <div class="ticket-info-value" id="displayRefNo" style="font-size: 12px;">7101000116300361</div>
+          </div>
+        </div>
+
+        <!-- Passenger Row -->
+        <div class="ticket-row-group">
+          <div style="width: 100%;">
+            <div class="ticket-info-label" style="margin-bottom: 6px;">Passenger</div>
+            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+              <div>
+                <div style="font-size: 12px; font-weight: 500; color: #666; margin-bottom: 2px;" id="displayPassengerCat">Adult</div>
+                <div style="font-size: 14px; font-weight: 700; color: #111;" id="displayPassengerQtyVal">1</div>
+              </div>
+              <div style="text-align: right;">
+                <div style="font-size: 12px; font-weight: 500; color: #666; margin-bottom: 2px;">Total</div>
+                <div style="font-size: 14px; font-weight: 700; color: #111;" id="displayPassengerTotalVal">1</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Transaction Date Row (No border line between Date & Time) -->
+        <div class="ticket-row-group" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px; padding: 2px 0; border-bottom: none !important;">
+          <div style="font-size: 12px; color: #666666;">Transaction Date</div>
+          <div id="displayTransDate" style="font-size: 12px; color: #666666; font-weight: 400; text-align: right;">12/06/26</div>
+        </div>
+
+        <!-- Transaction Time Row -->
+        <div class="ticket-row-group" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eeeeee; padding: 4px 0 6px; margin-bottom: 8px;">
+          <div style="font-size: 12px; color: #666666;">Transaction Time</div>
+          <div id="displayTransTime" style="font-size: 12px; color: #666666; font-weight: 400; text-align: right;">10:47:51</div>
+        </div>
+
+
+
+
+
+        <!-- Fare Breakdown -->
+        <div class="fare-breakdown" style="padding-top: 4px;">
+          <div class="fare-breakdown-row">
+            <span>Total Fare</span>
+            <span id="displayBaseFare">₹ 10.0</span>
+          </div>
+          <div class="fare-breakdown-row">
+            <span>Discount Amount</span>
+            <span id="displayDiscount">₹ 2.0</span>
+          </div>
+          <div class="fare-breakdown-row">
+            <span>Fare Amount</span>
+            <span id="displayFareAmount">₹ 8.0</span>
+          </div>
+          <div class="fare-breakdown-row total">
+            <span>Net Payable</span>
+            <span class="price" id="displayNetPayable">₹ 8.0</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- BOOKINGS HISTORY PAGE -->
+  <div class="page" id="page-booking">
+    <div class="header" style="justify-content: center;">
+      <h1 style="font-weight: 400;">Booking</h1>
+    </div>
+
+    <!-- Container list -->
+    <div id="bookingsListArea" style="min-height:300px">
+      <!-- Filled programmatically -->
+    </div>
+  </div>
+
+  <!-- TRANSIT MAP PAGE -->
+  <div class="page" id="page-map">
+    <div class="header" style="justify-content: center;">
+      <h1 style="font-weight: 400;">Transit Map</h1>
+    </div>
+
+    <!-- Map Image Area (Full width, vertically centered safely) -->
+    <div style="width: 100%; height: calc(100vh - 130px); overflow: auto; background: #fff; display: flex;">
+      <img src="assets/Screenshot_20260719_223809.png" style="max-width: 100%; height: auto; margin: auto; display: block;" alt="Surat Transit Map">
+    </div>
+  </div>
+
+  <!-- NOTIFICATIONS PAGE -->
+  <div class="page" id="page-notifications">
+    <div class="header" style="justify-content: center;">
+      <h1 style="font-weight: 400;">Notifications</h1>
+    </div>
+    
+    <div id="alertsListArea" style="padding-top:8px">
+      <!-- Dyn loading notifications -->
+    </div>
+  </div>
+
+  <!-- BOTTOM TAB NAVIGATION (100% Match with Image 2) -->
+  <div class="bottom-nav">
+    <button class="nav-item active" id="nav-btn-home" onclick="navigateTo('home')">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 10.5L12 3l9 7.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-9.5z"/>
+      </svg>
+      <span>Home</span>
+    </button>
+    <button class="nav-item" id="nav-btn-booking" onclick="navigateTo('booking')">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="6" width="18" height="12" rx="3"/>
+        <path d="M3 11a2 2 0 0 1 0 2"/>
+        <path d="M21 11a2 2 0 0 0 0 2"/>
+      </svg>
+      <span>Booking</span>
+    </button>
+    <button class="nav-item" id="nav-btn-notifications" onclick="navigateTo('notifications')">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+        <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+      </svg>
+      <span>Notification</span>
+    </button>
+    <button class="nav-item" id="nav-btn-map" onclick="navigateTo('map')">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/>
+        <line x1="8" y1="2" x2="8" y2="18"/>
+        <line x1="16" y1="6" x2="16" y2="22"/>
+      </svg>
+      <span>Transit Map</span>
+    </button>
+  </div>
+
+  <!-- Full Screen Expanded QR Modal (Clean QR only) -->
+  <div class="qr-modal" id="qrModal" onclick="closeFullQR()">
+    <div class="qr-modal-card" onclick="event.stopPropagation()" style="background: white; padding: 18px; border-radius: 20px; display: inline-block;">
+      <div id="qrcodeBig" style="margin: 0 auto; display: inline-block; padding: 4px; background: white; border-radius: 12px;"></div>
+      <div id="expandedTicketNo" style="font-size: 11px; color: #777; margin-top: 8px; font-family: monospace; letter-spacing: 0.5px; text-align: center;"></div>
+      <div id="gateScanStatus" style="font-size: 12px; font-weight: 600; margin-top: 8px; text-align: center; color: #666;"></div>
+    </div>
+  </div>
+
+  <!-- User Profile / Login Modal -->
+  <div class="qr-modal" id="loginModal" onclick="closeLoginModal()">
+    <div class="qr-modal-card" onclick="event.stopPropagation()" style="max-width:340px; text-align:left; padding:22px;">
+      <h3 style="margin-bottom:4px; color:#111; font-size:18px; font-weight:600">Passenger Profile</h3>
+      <p style="font-size:12px; color:#666; margin-bottom:18px">Enter name to display on your BRTS pass & app profile</p>
+      
+      <div style="margin-bottom:16px">
+        <label style="font-size:11px; color:#666; font-weight:500; display:block; margin-bottom:6px">PASSENGER NAME</label>
+        <input type="text" id="loginNameInput" placeholder="Enter name e.g. Panth" style="width:100%; padding:10px 12px; border:1px solid #ccc; border-radius:8px; font-size:14px; font-family:inherit; color:#222">
+      </div>
+
+      <div style="display:flex; gap:10px">
+        <button class="trip-action-btn outline" style="flex:1; border-radius:8px !important; font-weight:500 !important;" onclick="closeLoginModal()">
+          Cancel
+        </button>
+        <button class="show-route-btn" style="flex:1; border-radius:8px !important; font-weight:500 !important; font-size:14px !important;" onclick="saveLoginUser()">
+          Save Name
+        </button>
+      </div>
+    </div>
+    <button class="qr-modal-close" onclick="closeLoginModal()"><i class="fas fa-times-circle"></i></button>
+  </div>
+
+  <!-- Favourites Modal -->
+  <div class="qr-modal" id="favouritesModal" onclick="closeFavouritesModal()">
+    <div class="qr-modal-card" onclick="event.stopPropagation()" style="max-width:360px; text-align:left; padding:22px;">
+      <h3 style="margin-bottom:4px; color:#111; font-size:18px; font-weight:600"><i class="far fa-star" style="color:var(--primary)"></i> Saved Favourites</h3>
+      <p style="font-size:12px; color:#666; margin-bottom:16px">Quick access to your frequently traveled BRTS routes & stations</p>
+      
+      <div id="favouritesListContainer" style="max-height:260px; overflow-y:auto; margin-bottom:16px">
+        <div class="recent-booking-card" onclick="rebookRoute('Simada Junction BRTS', 'Nana Varachha BRTS'); closeFavouritesModal();">
+          <div class="recent-info">
+            <div class="recent-route"><span>Simada Junction</span> <i class="fas fa-arrow-right" style="font-size:10px; color:var(--primary)"></i> <span>Nana Varachha</span></div>
+            <div class="recent-date">Frequent Route | Line 12U</div>
+          </div>
+          <i class="fas fa-chevron-right" style="color:var(--text-secondary); font-size:12px"></i>
+        </div>
+        <div class="recent-booking-card" onclick="rebookRoute('Railway Station BRTS', 'Sarthana BRTS'); closeFavouritesModal();">
+          <div class="recent-info">
+            <div class="recent-route"><span>Railway Station</span> <i class="fas fa-arrow-right" style="font-size:10px; color:var(--primary)"></i> <span>Sarthana</span></div>
+            <div class="recent-date">Frequent Route | Line 5</div>
+          </div>
+          <i class="fas fa-chevron-right" style="color:var(--text-secondary); font-size:12px"></i>
+        </div>
+      </div>
+
+      <button class="show-route-btn" style="border-radius:8px !important; font-weight:500 !important; font-size:14px !important;" onclick="closeFavouritesModal()">
+        Done
+      </button>
+    </div>
+    <button class="qr-modal-close" onclick="closeFavouritesModal()"><i class="fas fa-times-circle"></i></button>
+  </div>
+
+  <!-- Complaint Modal -->
+  <div class="qr-modal" id="complaintModal" onclick="closeComplaintModal()">
+    <div class="qr-modal-card" onclick="event.stopPropagation()" style="max-width:360px; text-align:left; padding:22px;">
+      <h3 style="margin-bottom:4px; color:#111; font-size:18px; font-weight:600"><i class="far fa-comment-dots" style="color:var(--primary)"></i> Submit Complaint</h3>
+      <p style="font-size:12px; color:#666; margin-bottom:16px">Surat Municipal Corporation Grievance Redressal Portal</p>
+      
+      <div style="margin-bottom:12px">
+        <label style="font-size:11px; color:#666; font-weight:500; display:block; margin-bottom:4px">ISSUE TYPE</label>
+        <select id="complaintType" style="width:100%; padding:10px; border-radius:8px; border:1px solid #ccc; font-size:13px; color:#333">
+          <option>Bus Delay / Timetable Issue</option>
+          <option>Smart Entry Gate Issue</option>
+          <option>Ticket / Payment Issue</option>
+          <option>Driver / Conductor Conduct</option>
+          <option>Station Cleanliness</option>
+        </select>
+      </div>
+
+      <div style="margin-bottom:16px">
+        <label style="font-size:11px; color:#666; font-weight:500; display:block; margin-bottom:4px">DESCRIPTION</label>
+        <textarea id="complaintText" placeholder="Describe your grievance details..." style="width:100%; height:80px; padding:10px; border-radius:8px; border:1px solid #ccc; font-size:13px; font-family:inherit; color:#333"></textarea>
+      </div>
+
+      <div style="display:flex; gap:10px">
+        <button class="trip-action-btn outline" style="flex:1; border-radius:8px !important; font-weight:500 !important;" onclick="closeComplaintModal()">
+          Cancel
+        </button>
+        <button class="show-route-btn" style="flex:1; border-radius:8px !important; font-weight:500 !important; font-size:14px !important;" onclick="submitComplaint()">
+          Submit Grievance
+        </button>
+      </div>
+    </div>
+    <button class="qr-modal-close" onclick="closeComplaintModal()"><i class="fas fa-times-circle"></i></button>
+  </div>
+
+  <!-- Feedback Modal -->
+  <div class="qr-modal" id="feedbackModal" onclick="closeFeedbackModal()">
+    <div class="qr-modal-card" onclick="event.stopPropagation()" style="max-width:360px; text-align:left; padding:22px;">
+      <h3 style="margin-bottom:4px; color:#111; font-size:18px; font-weight:600"><i class="far fa-comments" style="color:var(--primary)"></i> Service Feedback</h3>
+      <p style="font-size:12px; color:#666; margin-bottom:14px">Help SMC improve Surat BRTS bus transit experience</p>
+      
+      <div style="text-align:center; margin-bottom:16px">
+        <div style="font-size:24px; color:#ffb703; cursor:pointer" id="starRatingRow">
+          <i class="fas fa-star" onclick="setStarRating(1)"></i>
+          <i class="fas fa-star" onclick="setStarRating(2)"></i>
+          <i class="fas fa-star" onclick="setStarRating(3)"></i>
+          <i class="fas fa-star" onclick="setStarRating(4)"></i>
+          <i class="fas fa-star" onclick="setStarRating(5)"></i>
+        </div>
+      </div>
+
+      <div style="margin-bottom:16px">
+        <textarea id="feedbackText" placeholder="Write feedback comments..." style="width:100%; height:70px; padding:10px; border-radius:8px; border:1px solid #ccc; font-size:13px; font-family:inherit; color:#333"></textarea>
+      </div>
+
+      <button class="show-route-btn" style="border-radius:8px !important; font-weight:500 !important; font-size:14px !important;" onclick="submitFeedback()">
+        Send Feedback
+      </button>
+    </div>
+    <button class="qr-modal-close" onclick="closeFeedbackModal()"><i class="fas fa-times-circle"></i></button>
+  </div>
+
+  <!-- Contact Us Modal -->
+  <div class="qr-modal" id="contactModal" onclick="closeContactModal()">
+    <div class="qr-modal-card" onclick="event.stopPropagation()" style="max-width:360px; text-align:left; padding:22px;">
+      <h3 style="margin-bottom:4px; color:#111; font-size:18px; font-weight:600"><i class="fas fa-phone-alt" style="color:var(--primary)"></i> Contact Support</h3>
+      <p style="font-size:12px; color:#666; margin-bottom:16px">Surat Municipal Corporation BRTS Helpline</p>
+      
+      <div style="font-size:13px; color:#333; line-height:1.6; margin-bottom:18px">
+        <div style="margin-bottom:10px"><strong>📞 Toll-Free Helpline:</strong><br><a href="tel:18002330294" style="color:var(--primary); font-weight:600; text-decoration:none">1800 233 0294</a></div>
+        <div style="margin-bottom:10px"><strong>🏢 BRTS Control Room:</strong><br><a href="tel:02612423751" style="color:var(--primary); font-weight:600; text-decoration:none">0261-2423751</a></div>
+        <div style="margin-bottom:10px"><strong>✉️ Support Email:</strong><br>sitilink@suratmunicipal.gov.in</div>
+        <div><strong>📍 Address:</strong><br>SMC Main Office, Muglisara, Surat - 395003</div>
+      </div>
+
+      <button class="show-route-btn" style="border-radius:8px !important; font-weight:500 !important; font-size:14px !important;" onclick="closeContactModal()">
+        Close
+      </button>
+    </div>
+    <button class="qr-modal-close" onclick="closeContactModal()"><i class="fas fa-times-circle"></i></button>
+  </div>
+
+  <!-- Terms and Condition Modal -->
+  <div class="qr-modal" id="termsModal" onclick="closeTermsModal()">
+    <div class="qr-modal-card" onclick="event.stopPropagation()" style="max-width:360px; text-align:left; padding:22px;">
+      <h3 style="margin-bottom:4px; color:#111; font-size:18px; font-weight:600"><i class="far fa-newspaper" style="color:var(--primary)"></i> Terms & Conditions</h3>
+      <p style="font-size:12px; color:#666; margin-bottom:14px">Surat BRTS Digital Ticketing Guidelines 2026</p>
+      
+      <div style="max-height:220px; overflow-y:auto; font-size:12px; color:#444; line-height:1.6; margin-bottom:16px; padding-right:6px">
+        <p style="margin-bottom:8px">1. Digital QR tickets issued via Sitilink/GoRutes are valid for 2 hours from ticket issuance time.</p>
+        <p style="margin-bottom:8px">2. Passengers must scan the QR code at the station smart entry gate before boarding the bus.</p>
+        <p style="margin-bottom:8px">3. Suman Pravas passes allow unlimited rides across all Surat BRTS lines until 10:00 PM on purchase date.</p>
+        <p style="margin-bottom:8px">4. Tickets are non-transferable and must be presented to ticket inspectors upon request.</p>
+      </div>
+
+      <button class="show-route-btn" style="border-radius:8px !important; font-weight:500 !important; font-size:14px !important;" onclick="closeTermsModal()">
+        I Accept
+      </button>
+    </div>
+    <button class="qr-modal-close" onclick="closeTermsModal()"><i class="fas fa-times-circle"></i></button>
+  </div>
+
+  <!-- Privacy Policy Modal -->
+  <div class="qr-modal" id="privacyModal" onclick="closePrivacyModal()">
+    <div class="qr-modal-card" onclick="event.stopPropagation()" style="max-width:360px; text-align:left; padding:22px;">
+      <h3 style="margin-bottom:4px; color:#111; font-size:18px; font-weight:600"><i class="far fa-shield-alt" style="color:var(--primary)"></i> Privacy Policy</h3>
+      <p style="font-size:12px; color:#666; margin-bottom:14px">Surat Smart City Development Ltd. Data Policy</p>
+      
+      <div style="max-height:220px; overflow-y:auto; font-size:12px; color:#444; line-height:1.6; margin-bottom:16px; padding-right:6px">
+        <p style="margin-bottom:8px">1. All passenger travel preferences and ticketing history are stored locally on your device for fast offline access.</p>
+        <p style="margin-bottom:8px">2. No personal location data is tracked or transmitted to external third-party servers.</p>
+        <p style="margin-bottom:8px">3. Contactless payment transactions are encrypted using official UPI QR & Bank standards.</p>
+      </div>
+
+      <button class="show-route-btn" style="border-radius:8px !important; font-weight:500 !important; font-size:14px !important;" onclick="closePrivacyModal()">
+        Got It
+      </button>
+    </div>
+    <button class="qr-modal-close" onclick="closePrivacyModal()"><i class="fas fa-times-circle"></i></button>
+  </div>
+
+  <!-- Core Javascript Libs and Logic -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <!-- App Modules (load order matters: globals → screens → PWA) -->
+  <script src="js/data.js"></script>
+  <script src="js/core.js"></script>
+  <script src="js/navigation.js"></script>
+  <script src="js/home.js"></script>
+  <script src="js/checkout.js"></script>
+  <script src="js/ticket.js"></script>
+  <script src="js/booking.js"></script>
+  <script src="js/notifications.js"></script>
+  <script src="js/map.js"></script>
+  <script src="js/pwa.js"></script>
+</body>
+</html>
