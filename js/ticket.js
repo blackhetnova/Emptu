@@ -88,6 +88,12 @@ function renderTicketDetails(ticket) {
   // Generate QRs
   generateTicketQR(ticket);
   
+  // Hide validity period pill for Suman Pravas tickets
+  const validityPill = document.getElementById('displayValidityNote');
+  if (validityPill) {
+    validityPill.parentElement.style.display = ticket.isSumanPravas ? 'none' : '';
+  }
+  
   // Start countdown clock
   startTicketTimer(ticket);
 }
